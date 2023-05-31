@@ -21,7 +21,7 @@ public class State implements Comparable<State>
 		name = n;
 		abbreviation = a;
 		population = p;
-		area = a;
+		area = ar;
 		reps = r;
 		capital = c;
 		month = m;
