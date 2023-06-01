@@ -103,13 +103,12 @@ public class BinaryTree {
 	/**
 	 * Prompts user for State name to find, then starts search
 	 */
-	public void testFind() { //doesnt loop continuously, doesnt work
+	public void testFind() { //doesnt work with lower case state input
 		System.out.println("\nTesting search algorithm\n");
 		String state = Prompt.getString("Enter state name to search for (Q to quit)");
-		System.out.println();
-		TreeNode<State> node = root;
+		// TreeNode<State> node = root;
 		
-		while(true) {
+		while(!state.trim().equalsIgnoreCase("q")) {
 		// 	if(node != null) {
 		// 		String name = node.getValue().getName();
 		// 		if(name.equalsIgnoreCase(state)) {
@@ -117,18 +116,23 @@ public class BinaryTree {
 		// 			return;
 		// 		}
 		// 		else {
-			if(node == null) {
-				System.out.println("Name = " + state + "  No such state name\n");
-				return;
-			}
-			if(state.equalsIgnoreCase(node.getValue().getName())) {
-				System.out.println("\n" + node.getValue() + "\n");
-				return;
-			}
-			if(state.compareTo(node.getValue().getName()) < 0)
-				node = node.getLeft();
-			else
-				node = node.getRight();
+			System.out.println(find(state));
+
+			// if(node == null) {
+			// 	System.out.println("Name = " + state + "  No such state name\n");
+			// 	return;
+			// }
+			// if(state.equalsIgnoreCase(node.getValue().getName())) {
+			// 	System.out.println("\n" + node.getValue() + "\n");
+			// 	return;
+			// }
+			// if(state.compareTo(node.getValue().getName()) < 0)
+			// 	node = node.getLeft();
+			// else
+			// 	node = node.getRight();
+
+			state = Prompt.getString("Enter state name to search for (Q to quit)");
+			// System.out.println();
 
 					// if(node.getLeft() == null && node.getRight() == null) {
 					// 	System.out.println("Name = " + state + "  No such state name\n");
@@ -142,6 +146,23 @@ public class BinaryTree {
 					// }
 				// }
 			// }
+		}
+	}
+
+	private String find(String state) {
+		TreeNode<State> node = root;
+		String lower = state.toLowerCase();
+		while(true) {
+			if(node == null) {
+				return "Name = " + state + "  No such state name\n";
+			}
+			if(lower.equalsIgnoreCase(node.getValue().getName().toLowerCase())) {
+				return "\n" + node.getValue() + "\n";
+			}
+			if(lower.compareTo(node.getValue().getName().toLowerCase()) < 0)
+				node = node.getLeft();
+			else
+				node = node.getRight();
 		}
 	}
 	
@@ -187,14 +208,19 @@ public class BinaryTree {
 	 * Prompts user for level of tree to print.
 	 * The top level (root node) is level 0.
 	 */
-	public void printLevel() { //doesnt loop continuously
+	public void printLevel() { 
 		System.out.println("\nTesting printLevel algorithm\n");
-		int level = Integer.parseInt(Prompt.getString("Enter level value to print (-1 to quit)"));
-		System.out.printf("\nLevel%5d\n", level);
+		int level = Integer.parseInt(Prompt.getString("Enter level value to print (-1 to quit)").trim());
 
-		getLevel(root, level, 0);
+		while(level != -1) {
+			System.out.printf("Level%5d\n", level);
 
-		System.out.println("\n");
+			getLevel(root, level, 0);
+
+			System.out.println("\n");
+			level = Integer.parseInt(Prompt.getString("Enter level value to print (-1 to quit)"));
+			System.out.println();
+		}
 	}
 
 	private void getLevel(TreeNode<State> node, int level, int curr) {
@@ -204,7 +230,7 @@ public class BinaryTree {
 		getLevel(node.getLeft(), level, curr + 1);
 
 		if(curr == level)
-			System.out.print(node.getValue().getName() + " ");
+			System.out.print(node.getValue().getName() + "   ");
 
 		getLevel(node.getRight(), level, curr + 1);
 
@@ -219,7 +245,7 @@ public class BinaryTree {
 	 * Prints the highest level of the tree (root is level 0),
 	 * prints "Tree empty" if empty tree
 	 */
-	public void testDepth() { //wrong depth
+	public void testDepth() {
 		if(root == null) {
 			System.out.println("Tree empty");
 			return;
@@ -229,13 +255,21 @@ public class BinaryTree {
 	}
 
 	public int getDepth(TreeNode<State> node, int level) {
-		if(node.getValue() == null)
+		if(node == null)
 			return level;
 
-		if(node.getLeft() != null)
-			level = getDepth(node.getLeft(), level + 1);
-		else if(node.getRight() != null)
-			level = getDepth(node.getRight(), level + 1);
+		int left = getDepth(node.getLeft(), level + 1);
+		if(left > level)
+			level = left;
+
+		int right = getDepth(node.getRight(), level + 1);
+		if(right > level)
+			level = right;
+
+		// if(node.getLeft() != null)
+			// level = getDepth(node.getLeft(), level + 1);
+		// else if(node.getRight() != null)
+			// level = getDepth(node.getRight(), level + 1);
 
 		return level;
 	}
